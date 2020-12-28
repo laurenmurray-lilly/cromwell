@@ -1,0 +1,330 @@
+steps:
+  - env:
+      - 'BUILD_NAME=centaurAws'
+      - 'BUILD_TYPE=centaurAws'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurAws'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurBcs'
+      - 'BUILD_TYPE=centaurBcs'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurBcs'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurDummy'
+      - 'BUILD_TYPE=centaurDummy'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurDummy'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurEngineUpgradeLocal'
+      - 'BUILD_TYPE=centaurEngineUpgradeLocal'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurEngineUpgradeLocal'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurEngineUpgradePapiV2alpha1'
+      - 'BUILD_TYPE=centaurEngineUpgradePapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurEngineUpgradePapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurHoricromtalPapiV2alpha1'
+      - 'BUILD_TYPE=centaurHoricromtalPapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurHoricromtalPapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurHoricromtalPapiV2beta'
+      - 'BUILD_TYPE=centaurHoricromtalPapiV2beta'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurHoricromtalPapiV2beta'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurHoricromtalEngineUpgradePapiV2alpha1'
+      - 'BUILD_TYPE=centaurHoricromtalEngineUpgradePapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurHoricromtalEngineUpgradePapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiUpgradePapiV1'
+      - 'BUILD_TYPE=centaurPapiUpgradePapiV1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiUpgradePapiV1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiUpgradeNewWorkflowsPapiV1'
+      - 'BUILD_TYPE=centaurPapiUpgradeNewWorkflowsPapiV1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiUpgradeNewWorkflowsPapiV1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiUpgradePapiV2alpha1'
+      - 'BUILD_TYPE=centaurPapiUpgradePapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiUpgradePapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiUpgradeNewWorkflowsPapiV2alpha1'
+      - 'BUILD_TYPE=centaurPapiUpgradeNewWorkflowsPapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiUpgradeNewWorkflowsPapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurLocalHsqldb'
+      - 'BUILD_TYPE=centaurLocal'
+      - 'BUILD_HSQLDB=true'
+    dir: '/workspace_centaurLocalHsqldb'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurLocalMariadb'
+      - 'BUILD_TYPE=centaurLocal'
+      - 'BUILD_MARIADB=10.3'
+    dir: '/workspace_centaurLocalMariadb'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurLocalMysql'
+      - 'BUILD_TYPE=centaurLocal'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurLocalMysql'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurLocalPostgresql'
+      - 'BUILD_TYPE=centaurLocal'
+      - 'BUILD_POSTGRESQL=11.3'
+    dir: '/workspace_centaurLocalPostgresql'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurLocalSqlite'
+      - 'BUILD_TYPE=centaurLocal'
+      - 'BUILD_SQLITE=true'
+    dir: '/workspace_centaurLocalSqlite'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiV1'
+      - 'BUILD_TYPE=centaurPapiV1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiV1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiV2alpha1'
+      - 'BUILD_TYPE=centaurPapiV2alpha1'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiV2alpha1'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurPapiV2beta'
+      - 'BUILD_TYPE=centaurPapiV2beta'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurPapiV2beta'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurSlurm'
+      - 'BUILD_TYPE=centaurSlurm'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurSlurm'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurTes'
+      - 'BUILD_TYPE=centaurTes'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurTes'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=centaurWdlUpgradeLocal'
+      - 'BUILD_TYPE=centaurWdlUpgradeLocal'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_centaurWdlUpgradeLocal'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=checkPublish'
+      - 'BUILD_TYPE=checkPublish'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_checkPublish'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=conformanceLocal'
+      - 'BUILD_TYPE=conformanceLocal'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_conformanceLocal'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=conformancePapiV2beta'
+      - 'BUILD_TYPE=conformancePapiV2beta'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_conformancePapiV2beta'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=conformanceTesk'
+      - 'BUILD_TYPE=conformanceTesk'
+      - 'BUILD_MYSQL=5.7'
+    dir: '/workspace_conformanceTesk'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=horicromtalDeadlock'
+      - 'BUILD_TYPE=horicromtalDeadlock'
+    dir: '/workspace_horicromtalDeadlock'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=dockerScripts'
+      - 'BUILD_TYPE=dockerScripts'
+    dir: '/workspace_dockerScripts'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=sbt'
+      - 'BUILD_TYPE=sbt'
+    dir: '/workspace_sbt'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=dbms'
+      - 'BUILD_TYPE=dbms'
+    dir: '/workspace_dbms'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=singleWorkflowRunner'
+      - 'BUILD_TYPE=singleWorkflowRunner'
+    dir: '/workspace_singleWorkflowRunner'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=metadataComparisonPython'
+      - 'BUILD_TYPE=metadataComparisonPython'
+    dir: '/workspace_metadataComparisonPython'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+  - env:
+      - 'BUILD_NAME=referenceDiskManifestBuilderApp'
+      - 'BUILD_TYPE=referenceDiskManifestBuilderApp'
+    dir: '/workspace_referenceDiskManifestBuilderApp'
+    name: '${_DOCKER_NAME}'
+    entrypoint: 'sudo'
+    args: ['--preserve-env', 'bash', '-c', '${_COMMAND_LINE}']
+    waitFor: ['-']
+
+substitutions:
+  _OWNER_NAME: 'broadinstitute'
+  # This docker image (shared with Jenkins) was built via:
+  # docker \
+  #   build \
+  #   --pull \
+  #   --tag us-docker.pkg.dev/broad-dsde-cromwell-dev/ci/cromwell-test:pr-6139 \
+  #   --file src/ci/docker-compose/cromwell-test/Dockerfile \
+  #   src/ci/docker-compose/cromwell-test/.
+  _DOCKER_NAME: 'us-docker.pkg.dev/broad-dsde-cromwell-dev/ci/cromwell-test:pr-6139'
+  _COMMAND_LINE: >-
+    cp -r /workspace/. . &&
+    export VAULT_TOKEN="$(gcloud secrets versions access latest --secret=VAULT_TOKEN)" &&
+    src/ci/bin/test.sh
+
+options:
+  machineType: 'N1_HIGHCPU_32'
+  logStreamingOption: STREAM_ON
+  env:
+    - 'CLOUD_BUILD=true'
+    - 'BUILD_ID=${BUILD_ID}'
+    - 'PROJECT_ID=${PROJECT_ID}'
+    - 'BRANCH_NAME=${BRANCH_NAME}'
+    - 'TAG_NAME=${TAG_NAME}'
+    - 'PR_NUMBER=${_PR_NUMBER}'
+    - 'OWNER_NAME=${_OWNER_NAME}'
+    - 'REPO_NAME=${REPO_NAME}'
+
+timeout: 7200s

@@ -78,6 +78,7 @@ cromwell::private::create_build_variables() {
     CROMWELL_BUILD_PROVIDER_TRAVIS="travis"
     CROMWELL_BUILD_PROVIDER_GITHUB="github"
     CROMWELL_BUILD_PROVIDER_CIRCLE="circle"
+    CROMWELL_BUILD_PROVIDER_GOOGLE="google"
     CROMWELL_BUILD_PROVIDER_JENKINS="jenkins"
     CROMWELL_BUILD_PROVIDER_UNKNOWN="unknown"
 
@@ -85,6 +86,8 @@ cromwell::private::create_build_variables() {
         CROMWELL_BUILD_PROVIDER="${CROMWELL_BUILD_PROVIDER_TRAVIS}"
     elif [[ "${GITHUB_ACTIONS-false}" == "true" ]]; then
         CROMWELL_BUILD_PROVIDER="${CROMWELL_BUILD_PROVIDER_GITHUB}"
+    elif [[ "${CLOUD_BUILD-false}" == "true" ]]; then
+        CROMWELL_BUILD_PROVIDER="${CROMWELL_BUILD_PROVIDER_GOOGLE}"
     elif [[ "${CIRCLECI-false}" == "true" ]]; then
         CROMWELL_BUILD_PROVIDER="${CROMWELL_BUILD_PROVIDER_CIRCLE}"
     elif [[ "${JENKINS-false}" == "true" ]]; then
@@ -250,6 +253,33 @@ cromwell::private::create_build_variables() {
                 # via: https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables
                 # So use https://discuss.circleci.com/t/pipeline-git-base-revision-is-completely-unreliable/38301/11
                 github_pr_number="${CIRCLE_PULL_REQUEST##*/}"
+            else
+                CROMWELL_BUILD_EVENT="push"
+            fi
+            ;;
+        "${CROMWELL_BUILD_PROVIDER_GOOGLE}")
+            CROMWELL_BUILD_IS_CI=true
+            CROMWELL_BUILD_TYPE="${BUILD_TYPE}"
+            CROMWELL_BUILD_NUMBER="${BUILD_ID%%-*}.${BUILD_NAME}"
+            CROMWELL_BUILD_URL="https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project=${PROJECT_ID}"
+            CROMWELL_BUILD_GIT_USER_EMAIL="cloud-build@google.com"
+            CROMWELL_BUILD_GIT_USER_NAME="Google Cloud Build"
+            CROMWELL_BUILD_HEARTBEAT_PATTERN="…"
+            CROMWELL_BUILD_GENERATE_COVERAGE=true
+
+            CROMWELL_BUILD_BRANCH="${BRANCH_NAME:-${TAG_NAME}}"
+            CROMWELL_BUILD_TAG="${TAG_NAME:-}"
+            CROMWELL_BUILD_IS_SECURE=true
+
+            if [[ -n "${PR_NUMBER:+set}" ]]; then
+                CROMWELL_BUILD_EVENT="pull_request"
+                github_pr_repository="${OWNER_NAME}/${REPO_NAME}"
+                github_pr_number="${PR_NUMBER}"
+
+                # Download more of the git history so we can search for the list modified files later.
+                # https://cloud.google.com/cloud-build/docs/automating-builds/create-manage-triggers#including_the_repository_history_in_a_build
+                # The '|| true' is there until this is debugged/tested with a forked PR and then may be removed
+                git fetch --no-tags --prune --depth=1000 origin +refs/heads/*:refs/remotes/origin/* || true
             else
                 CROMWELL_BUILD_EVENT="push"
             fi
@@ -502,6 +532,7 @@ cromwell::private::create_build_variables() {
     export CROMWELL_BUILD_PROVIDER
     export CROMWELL_BUILD_PROVIDER_CIRCLE
     export CROMWELL_BUILD_PROVIDER_GITHUB
+    export CROMWELL_BUILD_PROVIDER_GOOGLE
     export CROMWELL_BUILD_PROVIDER_JENKINS
     export CROMWELL_BUILD_PROVIDER_TRAVIS
     export CROMWELL_BUILD_PROVIDER_UNKNOWN
@@ -548,7 +579,10 @@ cromwell::private::create_database_variables() {
     CROMWELL_BUILD_DATABASE_SCHEMA="cromwell_test"
 
     case "${CROMWELL_BUILD_PROVIDER}" in
-        "${CROMWELL_BUILD_PROVIDER_TRAVIS}" | "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+        "${CROMWELL_BUILD_PROVIDER_TRAVIS}"|\
+        "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+        "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+        "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
             CROMWELL_BUILD_HSQLDB="${BUILD_HSQLDB-}"
             CROMWELL_BUILD_MARIADB_HOSTNAME="localhost"
             CROMWELL_BUILD_MARIADB_PORT="13306"
@@ -704,7 +738,10 @@ cromwell::private::create_centaur_variables() {
 
     # Pick **one** of the databases to run Centaur against
     case "${CROMWELL_BUILD_PROVIDER}" in
-        "${CROMWELL_BUILD_PROVIDER_TRAVIS}" | "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+        "${CROMWELL_BUILD_PROVIDER_TRAVIS}"|\
+        "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+        "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+        "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
 
             if [[ "${CROMWELL_BUILD_HSQLDB:-false}" == "true" ]]; then
                 CROMWELL_BUILD_CENTAUR_SLICK_PROFILE="slick.jdbc.HsqldbProfile$"
@@ -838,7 +875,10 @@ cromwell::private::create_conformance_variables() {
 
 cromwell::private::verify_secure_build() {
     case "${CROMWELL_BUILD_PROVIDER}" in
-        "${CROMWELL_BUILD_PROVIDER_TRAVIS}" | "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+        "${CROMWELL_BUILD_PROVIDER_TRAVIS}"|\
+        "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+        "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+        "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
             if [[ "${CROMWELL_BUILD_IS_SECURE}" != "true" ]] && \
                 [[ "${CROMWELL_BUILD_REQUIRES_SECURE}" == "true" ]]; then
                 echo "********************************************************"
@@ -1061,9 +1101,9 @@ cromwell::private::write_cwl_test_inputs() {
 JSON
 }
 
-cromwell::private::docker_login() {
+cromwell::private::dockerhub_login() {
     if cromwell::private::is_xtrace_enabled; then
-        cromwell::private::exec_silent_function cromwell::private::docker_login
+        cromwell::private::exec_silent_function cromwell::private::dockerhub_login
     else
         local dockerhub_auth_include
         dockerhub_auth_include="${CROMWELL_BUILD_RESOURCES_DIRECTORY}/dockerhub_auth.inc.sh"
@@ -1079,7 +1119,10 @@ cromwell::private::vault_login() {
         cromwell::private::exec_silent_function cromwell::private::vault_login
     elif [[ "${CROMWELL_BUILD_IS_SECURE}" == "true" ]]; then
         case "${CROMWELL_BUILD_PROVIDER}" in
-            "${CROMWELL_BUILD_PROVIDER_TRAVIS}" | "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+            "${CROMWELL_BUILD_PROVIDER_TRAVIS}"|\
+            "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+            "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+            "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
                 # Login to vault to access secrets
                 local vault_token
                 vault_token="${VAULT_TOKEN-vault token is not set as an environment variable}"
@@ -1124,10 +1167,13 @@ cromwell::private::copy_all_resources() {
 cromwell::private::setup_secure_resources() {
     if [[ "${CROMWELL_BUILD_REQUIRES_SECURE}" == "true" ]] || [[ "${CROMWELL_BUILD_OPTIONAL_SECURE}" == "true" ]]; then
         case "${CROMWELL_BUILD_PROVIDER}" in
-            "${CROMWELL_BUILD_PROVIDER_TRAVIS}" | "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+            "${CROMWELL_BUILD_PROVIDER_TRAVIS}"|\
+            "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+            "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+            "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
                 cromwell::private::vault_login
                 cromwell::private::render_secure_resources
-                cromwell::private::docker_login
+                cromwell::private::dockerhub_login
                 ;;
             "${CROMWELL_BUILD_PROVIDER_JENKINS}")
                 cromwell::private::copy_all_resources
@@ -1428,7 +1474,9 @@ cromwell::build::setup_common_environment() {
             cromwell::private::start_docker_databases
             cromwell::private::setup_travis_python
             ;;
-        "${CROMWELL_BUILD_PROVIDER_GITHUB}" | "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
+        "${CROMWELL_BUILD_PROVIDER_GITHUB}"|\
+        "${CROMWELL_BUILD_PROVIDER_GOOGLE}"|\
+        "${CROMWELL_BUILD_PROVIDER_CIRCLE}")
             cromwell::private::delete_boto_config
             cromwell::private::delete_sbt_boot
             cromwell::private::pull_common_docker_images
@@ -1442,6 +1490,10 @@ cromwell::build::setup_common_environment() {
             cromwell::private::pull_common_docker_images
             ;;
     esac
+
+    echo "DEBUG exiting. goodbye."
+    exit 0
+
 }
 
 cromwell::build::setup_centaur_environment() {
